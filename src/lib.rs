@@ -6,10 +6,33 @@ use std::{
     io::{self, Write},
 };
 
-#[derive(Debug)]
 pub struct Spanned<T> {
     kind: T,
     span: Span,
+}
+
+impl<T> fmt::Debug for Spanned<T>
+where
+    T: fmt::Debug,
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Spanned")
+            .field("kind", &self.kind)
+            .field("span", &self.span)
+            .finish()
+    }
+}
+
+impl<T> Clone for Spanned<T>
+where
+    T: Clone,
+{
+    fn clone(&self) -> Self {
+        Self {
+            kind: self.kind.clone(),
+            span: self.span(),
+        }
+    }
 }
 
 impl<T> Spanned<T> {
