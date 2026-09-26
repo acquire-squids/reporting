@@ -100,11 +100,9 @@ impl Span {
     pub fn line(&self, source: &str) -> Option<usize> {
         source
             .get(..(self.start()))
-            .into_iter()
-            .flat_map(|text| text.lines())
-            .enumerate()
-            .last()
-            .map(|(line_number, _)| line_number + 1)
+            // can't use `.lines` because trailing newlines aren't included in the iterator
+            // https://doc.rust-lang.org/std/primitive.str.html#method.lines
+            .map(|text| text.chars().filter(|ch| *ch == '\n').count() + 1)
     }
 
     #[must_use]
